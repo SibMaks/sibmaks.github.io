@@ -29,8 +29,9 @@
 		<script src="js/GLTFLoader.js"></script>
 		<script src="js/jquery-3.3.1.min.js"></script>
 		<script>
+			var angle = 0;
 			if (!WEBGL.isWebGLAvailable()) {
-				var warning = WEBGL.getWebGLErrorMessage();
+				let warning = WEBGL.getWebGLErrorMessage();
 				$('#error-alert').css('display', 'block');
 				$('#error-alert .body').text(warning);
 			} else {
@@ -55,15 +56,15 @@
 			}
 				
 			function init() {
-				var scene = new THREE.Scene();
+				let scene = new THREE.Scene();
 				//fov, ration (for example 16:9), near, far
 				//var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-				var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+				let camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
 				
 				camera.position.set( 0, 0, 100 );
 				camera.lookAt( 0, 0, 0 );
 
-				var renderer = new THREE.WebGLRenderer();
+				let renderer = new THREE.WebGLRenderer();
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				$('body').append(renderer.domElement);
 				$(window).resize(function() {resize(renderer);});
@@ -93,6 +94,10 @@
 				
 				cube.rotation.x += 0.01;
 				cube.rotation.y += 0.01;
+
+				context.camera.position.x = radius * Math.cos( angle );
+				context.camera.position.z = radius * Math.sin( angle );
+				angle += 0.01;
 				
 				context.renderer.render(context.scene, context.camera);
 			}
