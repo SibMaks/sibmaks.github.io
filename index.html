@@ -27,81 +27,9 @@
 		<script src="js/three.min.js"></script>
 		<script src="js/WebGL.js"></script>
 		<script src="js/GLTFLoader.js"></script>
+		<script src="js/controls/PointerLockControls.js"></script>
 		<script src="js/jquery-3.3.1.min.js"></script>
-		<script>
-			var angle = 0;
-			var radius = 10;
-			if (!WEBGL.isWebGLAvailable()) {
-				let warning = WEBGL.getWebGLErrorMessage();
-				$('#error-alert').css('display', 'block');
-				$('#error-alert .body').text(warning);
-			} else {
-				var context = init();
-			
-				var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-				var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-				var cube = new THREE.Mesh( geometry, material );
-				context.scene.add(cube);
-				
-				var materialLine = new THREE.LineBasicMaterial({color: 0x0000ff});
-				var geometryLine = new THREE.Geometry();
-				geometryLine.vertices.push(new THREE.Vector3(-10, 0, 0));
-				geometryLine.vertices.push(new THREE.Vector3(0, 10, 0));
-				geometryLine.vertices.push(new THREE.Vector3(10, 0, 0));
-				var line = new THREE.Line(geometryLine, materialLine);
-				context.scene.add(line);
-
-				//context.camera.position.z = 5;
-				
-				animate(context, cube);
-			}
-				
-			function init() {
-				let scene = new THREE.Scene();
-				//fov, ration (for example 16:9), near, far
-				//var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-				let camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
-				
-				camera.position.set( 0, 0, 100 );
-				camera.lookAt( 0, 0, 0 );
-
-				let renderer = new THREE.WebGLRenderer();
-				renderer.setSize(window.innerWidth, window.innerHeight);
-				$('body').append(renderer.domElement);
-				$(window).resize(function() {resize(renderer);});
-				
-				var loader = new THREE.GLTFLoader();
-				
-				loader.load( 'source/2ftx4ft.glb', function ( gltf ) {
-					scene.add( gltf.scene );
-				}, 
-				// onProgress callback
-				function ( xhr ) {
-					console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-				},
-				function ( error ) {
-					console.error( error );
-				} );
-				
-				return {scene: scene, camera: camera, renderer: renderer};
-			}
-			
-			function resize(renderer) {
-				renderer.setSize(window.innerWidth, window.innerHeight);
-			}
-			
-			function animate(context, cube) {
-				requestAnimationFrame(function() {animate(context, cube);});
-				
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.01;
-
-				context.camera.position.x = radius * Math.cos( angle );
-				context.camera.position.z = radius * Math.sin( angle );
-				angle += 0.01;
-				
-				context.renderer.render(context.scene, context.camera);
-			}
-		</script>
+		<script src="js/renderer.js"></script>
+		<script src="js/engine.js"></script>
 	</body>
 </html>
