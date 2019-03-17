@@ -2,32 +2,32 @@
 <html>
 	<head>
 		<meta charset="utf-8"/>
-		<title>Title</title>
+		<title>Click</title>
 		<style>
+			@font-face {
+				font-family: 'Back to 1982';
+				src: url(fonts/BACKTO1982.ttf);
+			}
+
 			* {
-				margin: 0px;
-				padding: 0px;
+				margin: 0;
+				padding: 0;
 			}
-			
+
+			body {
+				background-color: darkslategrey;
+				overflow: hidden;
+				font-family: arial;
+			}
+
 			canvas {
-				width: 100%;
-				height: 100%;
-			}
-			
-			#error-alert {
-				display: none;
+				margin: auto;
+				display: block;
 			}
 		</style>
 	</head>
 	<body>
-		<div id="error-alert" class="alert">
-			<div class="title">Ошибка</div>
-			<div class="body"></div>
-		</div>
-		<script src="js/three.min.js"></script>
-		<script src="js/WebGL.js"></script>
-		<script src="js/GLTFLoader.js"></script>
-		<script src="js/controls/PointerLockControls.js"></script>
+		<canvas id="game-canvas" width="288" height="512"></canvas>
 		<script src="js/jquery-3.3.1.min.js"></script>
 		<script src="js/renderer.js"></script>
 		<script src="js/engine.js"></script>
