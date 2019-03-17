@@ -79,6 +79,17 @@ $(function () {
 		}
 	});
 
+    $(document).on({ 'touchstart' : function() {
+        if (gameContext.state === STATES.PAUSE) {
+            gameContext.state = STATES.PLAY;
+        } else if (gameContext.state === STATES.OVER) {
+            restart(canvas, gameContext);
+            gameContext.state = STATES.PAUSE;
+        } else if (gameContext.state === STATES.PLAY) {
+            moveUp(gameContext.bird);
+        }
+    } });
+
 	draw();
 
 	function draw() {
@@ -141,16 +152,16 @@ $(function () {
 		context.drawImage(fg, fgXOffset, canvas.height - fg.height);
 		context.drawImage(fg, fgXOffset + fg.width, canvas.height - fg.height);
 
-			//рисуем питцу
-			context.drawImage(gameContext.bird.image,
-				gameContext.bird.frame * (gameContext.bird.image.width / gameContext.bird.frames),
-				0,
-				gameContext.bird.image.width / gameContext.bird.frames,
-				gameContext.bird.image.height,
-				gameContext.bird.x,
-				gameContext.bird.y,
-				gameContext.bird.width,
-				gameContext.bird.height);
+		//рисуем питцу
+        context.drawImage(gameContext.bird.image,
+            gameContext.bird.frame * (gameContext.bird.image.width / gameContext.bird.frames),
+            0,
+            gameContext.bird.image.width / gameContext.bird.frames,
+            gameContext.bird.image.height,
+            gameContext.bird.x,
+            gameContext.bird.y,
+            gameContext.bird.width,
+            gameContext.bird.height);
 
 		if(gameContext.state !== STATES.OVER) {
 			if (++frames > 10) {
