@@ -64,7 +64,8 @@ $(function () {
 		if(gameContext.state === STATES.PAUSE) {
 			gameContext.state = STATES.PLAY;
 		} else if(gameContext.state === STATES.OVER && e.key === 'Enter') {
-			gameContext.state = STATES.PLAY;
+			restart(canvas, gameContext);
+			gameContext.state = STATES.PAUSE;
 		} else if(gameContext.state === STATES.PLAY) {
 			moveUp(gameContext.bird);
 		}
@@ -75,11 +76,11 @@ $(function () {
 	function draw() {
 		context.drawImage(bg, 0, 0);
 
-		if(gameContext.state === STATES.PLAY) {
-			for (let i = 0; i < gameContext.pipe.length; i++) {
-				context.drawImage(pipeUp, gameContext.pipe[i].x, gameContext.pipe[i].y);
-				context.drawImage(pipeBottom, gameContext.pipe[i].x, gameContext.pipe[i].y + pipeUp.height + gap);
+		for (let i = 0; i < gameContext.pipe.length; i++) {
+			context.drawImage(pipeUp, gameContext.pipe[i].x, gameContext.pipe[i].y);
+			context.drawImage(pipeBottom, gameContext.pipe[i].x, gameContext.pipe[i].y + pipeUp.height + gap);
 
+			if (gameContext.state === STATES.PLAY) {
 				gameContext.pipe[i].x--;
 
 				//если текущий блок появляется на экране
@@ -105,7 +106,6 @@ $(function () {
 						Cookies.set('high-score', gameContext.highScore);
 					}
 					gameContext.state = STATES.OVER;
-					restart(canvas, gameContext);
 					break;
 				}
 
@@ -117,9 +117,11 @@ $(function () {
 			}
 		}
 
-		//Сбрасываем в ноль нижнюю часть
-		if(Math.abs(--fgXOffset) > fg.width) {
-			fgXOffset = 0;
+		if(gameContext.state !== STATES.OVER) {
+			//Сбрасываем в ноль нижнюю часть
+			if (Math.abs(--fgXOffset) > fg.width) {
+				fgXOffset = 0;
+			}
 		}
 
 		//рисуем "землю"
