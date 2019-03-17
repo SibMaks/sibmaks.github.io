@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Back to 1982';
-    src: url('/fonts/BACKTO1982.TTF');
+    src: url('../fonts/BACKTO1982.TTF');
 }
 
 * {

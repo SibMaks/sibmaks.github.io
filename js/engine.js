@@ -32,9 +32,11 @@ $(function () {
 		pipe: [],
 		score: 0,
 		state: STATES.PAUSE,
-		highScore: 0,
+		highScore: Cookies.get('high-score'),
 		gravity: 1.5
 	};
+	gameContext.highScore = gameContext.highScore === undefined || gameContext.highScore == null ? 0 : gameContext.highScore;
+
 	gameContext.bird.image.src = "textures/bird.png";
 
 	// Массив блоков
@@ -83,7 +85,8 @@ $(function () {
 				//если текущий блок появляется на экране
 				if (gameContext.pipe[i].x === (canvas.width / 2)) {
 					//делаем не сильно большой разброс
-					const min = 0.6;
+					let min = 0.6 + gameContext.score * 0.001;
+					min = min > 1 ? 1 : min;
 					const delta = Math.random() * (1 - min) + min;
 					gameContext.pipe.push({
 						x: canvas.width,
@@ -99,6 +102,7 @@ $(function () {
 					|| gameContext.bird.y + gameContext.bird.image.height >= canvas.height - fg.height) {
 					if (gameContext.highScore < gameContext.score) {
 						gameContext.highScore = gameContext.score;
+						Cookies.set('high-score', gameContext.highScore);
 					}
 					gameContext.state = STATES.OVER;
 					restart(canvas, gameContext);
