@@ -28,7 +28,14 @@ $(function () {
 	let fgXOffset = 0;
 
 	let gameContext = {
-		bird: {image: new Image()},
+		bird: {
+			image: new Image(),
+			width: 38,
+			height: 26,
+			frame: 0,
+			frames: 3,
+			direction: 1
+		},
 		pipe: [],
 		score: 0,
 		state: STATES.PAUSE,
@@ -42,22 +49,23 @@ $(function () {
 	// Массив блоков
 	restart(canvas, gameContext);
 
-	let bg = new Image();
+	const bg = new Image();
 	bg.src = "textures/bg.png";
 
-	let fg = new Image();
+	const fg = new Image();
 	fg.src = "textures/fg.png";
 
-	let pipeUp = new Image();
+	const pipeUp = new Image();
 	pipeUp.src = "textures/pipeUp.png";
 
-	let pipeBottom = new Image();
+	const pipeBottom = new Image();
 	pipeBottom.src = "textures/pipeBottom.png";
 
 	// Звуковые файлы
-	let scoreAudio = new Audio("audio/score.mp3");
+	const scoreAudio = new Audio("audio/score.mp3");
 
-	let gap = 90;
+	const gap = 90;
+	let frames = 0;
 
 	// При нажатии на какую-либо кнопку прыгаем
 	$(document).keydown(function (e) {
@@ -77,6 +85,11 @@ $(function () {
 		context.drawImage(bg, 0, 0);
 
 		for (let i = 0; i < gameContext.pipe.length; i++) {
+			if(gameContext.pipe[i].x + pipeUp.width < -10) {
+				gameContext.pipe.splice(i, 1);
+				i--;
+				continue;
+			}
 			context.drawImage(pipeUp, gameContext.pipe[i].x, gameContext.pipe[i].y);
 			context.drawImage(pipeBottom, gameContext.pipe[i].x, gameContext.pipe[i].y + pipeUp.height + gap);
 
@@ -96,11 +109,11 @@ $(function () {
 				}
 
 				// Отслеживание прикосновений
-				if (gameContext.bird.x + gameContext.bird.image.width >= gameContext.pipe[i].x
+				if (gameContext.bird.x + gameContext.bird.width >= gameContext.pipe[i].x
 					&& gameContext.bird.x <= gameContext.pipe[i].x + pipeUp.width
 					&& (gameContext.bird.y <= gameContext.pipe[i].y + pipeUp.height
-						|| gameContext.bird.y + gameContext.bird.image.height >= gameContext.pipe[i].y + pipeUp.height + gap)
-					|| gameContext.bird.y + gameContext.bird.image.height >= canvas.height - fg.height) {
+						|| gameContext.bird.y + gameContext.bird.height >= gameContext.pipe[i].y + pipeUp.height + gap)
+					|| gameContext.bird.y + gameContext.bird.height >= canvas.height - fg.height) {
 					if (gameContext.highScore < gameContext.score) {
 						gameContext.highScore = gameContext.score;
 						Cookies.set('high-score', gameContext.highScore);
@@ -128,8 +141,28 @@ $(function () {
 		context.drawImage(fg, fgXOffset, canvas.height - fg.height);
 		context.drawImage(fg, fgXOffset + fg.width, canvas.height - fg.height);
 
-		//рисуем питцу
-		context.drawImage(gameContext.bird.image, gameContext.bird.x, gameContext.bird.y);
+			//рисуем питцу
+			context.drawImage(gameContext.bird.image,
+				gameContext.bird.frame * (gameContext.bird.image.width / gameContext.bird.frames),
+				0,
+				gameContext.bird.image.width / gameContext.bird.frames,
+				gameContext.bird.image.height,
+				gameContext.bird.x,
+				gameContext.bird.y,
+				gameContext.bird.width,
+				gameContext.bird.height);
+
+		if(gameContext.state !== STATES.OVER) {
+			if (++frames > 10) {
+				gameContext.bird.frame += gameContext.bird.direction;
+				if (gameContext.bird.frame === 2) {
+					gameContext.bird.direction = -1;
+				} else if (gameContext.bird.frame === 0) {
+					gameContext.bird.direction = 1;
+				}
+				frames = 0;
+			}
+		}
 
 		showStat(canvas, context, gameContext);
 
