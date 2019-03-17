@@ -86,7 +86,7 @@ $(function () {
 				//если текущий блок появляется на экране
 				if (gameContext.pipe[i].x === (canvas.width / 2)) {
 					//делаем не сильно большой разброс
-					let min = 0.55 - gameContext.score * 0.03;
+					let min = 0.55 - gameContext.score * 0.003;
 					min = min < 0 ? 0 : min;
 					const delta = Math.random() * (1 - min) + min;
 					gameContext.pipe.push({
