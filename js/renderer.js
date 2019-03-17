@@ -28,5 +28,11 @@ function showStat(canvas, context, gameContext) {
         context.fillStyle = "#000";
         context.font = "24px 'Back to 1982'";
         fillMiddle(canvas, context, gameContext.highScore, canvas.height - 48);
+    } else if(gameContext.state === STATES.PAUSE) {
+        if(gameContext.highScore > 0) {
+            context.fillStyle = "#000";
+            context.font = "24px 'Back to 1982'";
+            fillMiddle(canvas, context, gameContext.highScore, canvas.height - 48);
+        }
     }
 }
