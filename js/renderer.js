@@ -16,7 +16,6 @@ function fillMiddle(canvas, context, text, y) {
 
 function showStat(canvas, context, gameContext) {
     if(gameContext.state === STATES.PLAY) {
-        gameContext.bird.y += gameContext.gravity;
         context.fillStyle = "#000";
         context.font = "24px 'Back to 1982'";
         fillMiddle(canvas, context, gameContext.score, 28);

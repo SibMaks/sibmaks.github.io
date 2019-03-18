@@ -1,7 +1,7 @@
 let moveUp = (function () {
 	let fly = new Audio("audio/fly.mp3");
-	return function (bird) {
-		bird.y -= 25;
+	return function (context) {
+		context.bird.acceleration = 25;
 		fly.play();
 	}
 }) ();
@@ -11,6 +11,10 @@ const STATES = {PAUSE: 'PAUSE', OVER: 'OVER', PLAY: 'PLAY'};
 function restart(canvas, context) {
 	context.bird.x = 10;
 	context.bird.y = 150;
+	context.bird.frame = 0;
+	context.bird.frameDirection = 1;
+	//context.bird.speed = 0;
+	context.bird.acceleration = 0;
 	context.pipe.splice(0, context.pipe.length);
 
 	context.pipe.push(
@@ -32,9 +36,7 @@ $(function () {
 			image: new Image(),
 			width: 38,
 			height: 26,
-			frame: 0,
-			frames: 3,
-			direction: 1
+			frames: 3
 		},
 		pipe: [],
 		score: 0,
@@ -75,7 +77,7 @@ $(function () {
 			restart(canvas, gameContext);
 			gameContext.state = STATES.PAUSE;
 		} else if(gameContext.state === STATES.PLAY) {
-			moveUp(gameContext.bird);
+			moveUp(gameContext);
 		}
 	});
 
@@ -86,7 +88,7 @@ $(function () {
             restart(canvas, gameContext);
             gameContext.state = STATES.PAUSE;
         } else if (gameContext.state === STATES.PLAY) {
-            moveUp(gameContext.bird);
+            moveUp(gameContext);
         }
     } });
 
@@ -152,6 +154,21 @@ $(function () {
 		context.drawImage(fg, fgXOffset, canvas.height - fg.height);
 		context.drawImage(fg, fgXOffset + fg.width, canvas.height - fg.height);
 
+		//физика птицы
+		if(gameContext.state === STATES.PLAY) {
+			if(gameContext.bird.acceleration > 0) {
+				//gameContext.bird.speed = Math.min(gameContext.bird.speed + 0.1, Math.PI / 2);
+				gameContext.bird.y -= gameContext.gravity;
+			} else {
+				//gameContext.bird.speed = Math.max(gameContext.bird.speed - 0.1, -Math.PI / 2);
+				gameContext.bird.y += gameContext.gravity;
+			}
+			gameContext.bird.acceleration -= gameContext.gravity;
+		}
+
+		/*context.save();
+		context.translate(gameContext.bird.x, gameContext.bird.y);
+		context.rotate(gameContext.bird.speed);*/
 		//рисуем питцу
         context.drawImage(gameContext.bird.image,
             gameContext.bird.frame * (gameContext.bird.image.width / gameContext.bird.frames),
@@ -162,14 +179,15 @@ $(function () {
             gameContext.bird.y,
             gameContext.bird.width,
             gameContext.bird.height);
+        //context.restore();
 
 		if(gameContext.state !== STATES.OVER) {
 			if (++frames > 10) {
-				gameContext.bird.frame += gameContext.bird.direction;
+				gameContext.bird.frame += gameContext.bird.frameDirection;
 				if (gameContext.bird.frame === 2) {
-					gameContext.bird.direction = -1;
+					gameContext.bird.frameDirection = -1;
 				} else if (gameContext.bird.frame === 0) {
-					gameContext.bird.direction = 1;
+					gameContext.bird.frameDirection = 1;
 				}
 				frames = 0;
 			}
